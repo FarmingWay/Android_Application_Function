@@ -10,6 +10,8 @@
 
 public class Item {
 
+    // setting parameters of each item
+    
     private String number;
     private String contents;
 
@@ -32,7 +34,8 @@ public class Item {
 ---------------------------------------------------------------------------------------------------------
 >> item_view.xml
 
-// each item contains two views(one for 'id' and the other for 'contents')
+// Layout for each item list
+// each item contains two views (one for 'id' and the other for 'contents')
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
               android:orientation="horizontal"
@@ -191,10 +194,12 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        // getting reference of listview
+        
         listView = (ListView) findViewById(R.id.listspace);
         listView.setAdapter(adapter);
 
-        // add items to adapter
+        // adding items to adapter
         
         adapter.addItem("1", "first");
         adapter.addItem("2", "second");
