@@ -1,0 +1,22 @@
+////////////////////////////////////////////////////////////////////////////
+/// How to apply change of list in other fragment
+////////////////////////////////////////////////////////////////////////////
+
+// When use list in a tab, sometimes it is required to change it from other tab
+
+
+>> OtherPage.java
+
+ ListView listview = ((MainTabActivity)Tab2.context).findViewById(R.id.listsapce);
+ mAdapter adapter = (MyAdapter)listview.getAdapter();
+ 
+ adapter.addItem(a, b);
+ 
+ adapter.notifyDataSetChanged();
+
+
+
+// the point is 
+// A. find the listview you want to change
+// B. get adapter from list you found
+// C. apply change and 'notifyDataSetChanged();'
