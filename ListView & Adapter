@@ -1,0 +1,213 @@
+////////////////////////////////////////////////////////////////////////////
+/// How to handle ListView with adapter 
+////////////////////////////////////////////////////////////////////////////
+
+
+>> Item.java
+
+// Setting each item object
+// In this case, there are two values; String number & String contents
+
+public class Item {
+
+    private String number;
+    private String contents;
+
+    public String getNumber() {
+        return number;
+    }
+    public void setNumber(String id) {
+        this.number = id;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+}
+
+
+---------------------------------------------------------------------------------------------------------
+>> item_view.xml
+
+// each item contains two views(one for 'id' and the other for 'contents')
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+
+    <TextView
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="2"
+            android:id="@+id/number"
+    />
+
+    <TextView
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="8"
+            android:id="@+id/content"
+    />
+
+</LinearLayout>
+
+
+
+
+---------------------------------------------------------------------------------------------------------
+>> mAdapter.java
+
+public class mAdapter extends BaseAdapter {
+
+    // Array containing items
+
+    private ArrayList<Item> mItems = new ArrayList<>();
+
+    Context context;
+
+    @Override
+    public int getCount() {
+        return mItems.size();
+    }
+
+    @Override
+    public Item getItem(int position) {
+        return mItems.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+    
+        context = parent.getContext();
+
+
+        // Setting layout on item list view
+
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_view, parent, false);
+        }
+
+
+        // Getting view reference from item view layout
+
+        TextView numbox = (TextView) convertView.findViewById(R.id.number) ;
+        TextView contbox = (TextView) convertView.findViewById(R.id.content) ;
+
+
+        // Getting value from each item(contents applied to item view);
+
+         final Item myItem = getItem(position);
+
+         final String number = myItem.getNumber();
+         final String content = myItem.getContents();
+
+
+         // Applying values to item view
+
+         numbox.setText(number);
+         contbox.setText(content);
+
+
+
+         // Setting event_listener on the view
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(context, "number: " + number + "content: " + content, Toast.LENGTH_LONG).show();
+
+            }
+        };
+
+        convertView.setOnClickListener(onClickListener);
+
+
+        return convertView;
+    }
+
+    public void addItem(String number, String content) {
+
+        Item mItem = new Item();
+        
+        // each item setting
+
+        mItem.setNumber(number);
+        mItem.setContents(content);
+
+        mItems.add(mItem);
+
+    }
+}
+
+
+
+---------------------------------------------------------------------------------------------------------
+>> activity_main.xml
+
+// xml of main activity which contains ListView
+
+ <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:id="@+id/listspace">
+            </ListView>
+
+    </LinearLayout>
+
+
+---------------------------------------------------------------------------------------------------------
+>> Main.java
+
+
+
+public class Main extends AppCompatActivity {
+
+    ListView listView;
+    mAdapter adapter = new mAdapter();
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        listView = (ListView) findViewById(R.id.listspace);
+        listView.setAdapter(adapter);
+
+        // add items to adapter
+        
+        adapter.addItem("1", "first");
+        adapter.addItem("2", "second");
+        adapter.addItem("3", "third");
+        adapter.addItem("4", "fourth");
+        adapter.addItem("5", "fifth");
+        adapter.addItem("6", "sixth");
+        adapter.addItem("7", "seventh");
+        adapter.addItem("8", "eighth");
+        adapter.addItem("9", "nineth");
+        adapter.addItem("10", "tenth");
+
+
+    }
+}
+
