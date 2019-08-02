@@ -1,0 +1,48 @@
+////////////////////////////////////////////////////////////////////////////
+/// How to use 'DrawerLayout'
+////////////////////////////////////////////////////////////////////////////
+
+
+// > Page.xml
+
+<androidx.drawerlayout.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+// A. backgound layout
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  Background"/>
+        
+    </LinearLayout>
+
+
+// B. Menu layout
+
+    <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:orientation="vertical"
+            android:background="@color/colorPrimary">
+
+        <TextView 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:text="DrawPage"/>
+        
+    </LinearLayout>
+    
+
+</androidx.drawerlayout.widget.DrawerLayout>
+
+
+
