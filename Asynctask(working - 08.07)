@@ -2,4 +2,115 @@
 /// How to use 'Asynctask'
 ////////////////////////////////////////////////////////////////////////////
 
-// Interacting with server DB
+// Sending data to DB
+// Getting data from DB
+
+// In this case, send two String parameters and get JSONArray from DB
+// to use Asynctask, it is required to define 'void onPreExecute()', 'void onPostExecute()' and 'doInBackground()'
+
+class PracticeAsyncTask extends AsyncTask<String, Void, JSONArray> {
+
+        ProgressDialog progressDialog;
+        mAdapter mAdapter = new mAdapter();
+
+// A. onPreExecute()
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(Practice.this,
+                    "loading...", null, true, true);
+        }
+
+// B. onPostExecute()
+// can get return value
+// in this case, it gets JSONArray, extracts each JSONobject from it and add to adapter 
+
+        @Override
+        protected void onPostExecute(JSONArray s) {
+
+            try {
+                for (int i = 0; i < s.length(); i++) {
+
+                    final JSONObject object = s.getJSONObject(i);
+                    final String first = object.getString("first");
+                    final String second = object.getString("second");
+                    final String third = object.getString("third");
+
+                    mAdapter.addItem(first, second, third);
+                    mAdapter.notifyDataSetChanged();
+
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            progressDialog.dismiss();
+
+        }
+
+// C. doInBackground()
+// define how to interact with db
+// sending parameters and getting data
+// in sends three parameters here
+
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            String firstP = (String)params[0];
+            String secondP = (String) params[1];
+            String thirdP = (String) params[2];
+
+            String postParameters = "first=" + firstP + "&second=" + secondP + "&third=" + thirdP;
+
+            try {
+
+              // String below is address of requesting php file
+              
+                String urlStr = "http://address.com/asynctask.php";
+                URL url = new URL(urlStr);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+                return new JSONArray(sb.toString());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
