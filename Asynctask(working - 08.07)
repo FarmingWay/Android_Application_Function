@@ -5,8 +5,11 @@
 // Sending data to DB
 // Getting data from DB
 
-// In this case, send two String parameters and get JSONArray from DB
+// In this case, it sends three String parameters and gets JSONArray from DB
 // to use Asynctask, it is required to define 'void onPreExecute()', 'void onPostExecute()' and 'doInBackground()'
+
+
+>> AsyncTask class
 
 class PracticeAsyncTask extends AsyncTask<String, Void, JSONArray> {
 
@@ -24,8 +27,8 @@ class PracticeAsyncTask extends AsyncTask<String, Void, JSONArray> {
         }
 
 // B. onPostExecute()
-// can get return value
-// in this case, it gets JSONArray, extracts each JSONobject from it and add to adapter 
+// get return value, define how to use it.
+// in this case, it gets JSONArray, extracts each JSONobject from it and adds to adapter 
 
         @Override
         protected void onPostExecute(JSONArray s) {
@@ -114,3 +117,74 @@ class PracticeAsyncTask extends AsyncTask<String, Void, JSONArray> {
             return null;
         }
     }
+
+
+>> Main class
+
+// we can use like this
+
+PracticeAsyncTask practice = new PracticeAsyncTask();
+practice.execute("first", "second", "third");
+
+
+
+>> asynctask.php
+
+<?php
+    error_reporting(E_ALL);
+    ini_set('display_errors',1);
+    include('connect.php');
+
+
+        $first = $_POST['first'];
+        $second= $_POST['second'];
+        $third= $_POST['third'];
+
+
+
+        if(empty($first)){
+            $errMSG = "no data 1";
+        }
+        if(empty($second)){
+            $errMSG = "no data 2";
+        }
+        if(empty($third)){
+            $errMSG = "no data ";
+        }
+
+
+        if(!isset($errMSG))
+        {
+            try{
+                $stmt = $con->prepare('SELECT * FROM table WHERE first = :first AND second = :second AND third = :third');
+
+                $stmt->bindParam(':first', $first);
+                $stmt->bindParam(':second', $second);
+                $stmt->bindParam(':third', $third);
+                $stmt->execute();
+                
+                $result = $stmt->fetchAll();
+
+
+                if($result != null)
+                {
+                    $successMSG = $result;
+                }
+                else
+                {
+                    $errMSG = "empty result";
+                }
+
+            } catch(PDOException $e) {
+                die("Database error: " . $e->getMessage());
+            }
+        }
+?>
+
+<?php
+  if (isset($errMSG)) echo $errMSG;
+  if (isset($successMSG)) echo json_encode($successMSG);
+ ?>
+
+
+
